@@ -16,19 +16,19 @@ class main(Tkinter.Tk):
         self.creating_snake_moving_settings()
         self.creating_score_board()
         self.bind('<Any-KeyPress>', self.connecting_head_with_keys)
+        self.direction_prohibited = "Left"
 
     # Creating Score Board
     def creating_score_board(self):
         self.scoreboard=Tkinter.Label(self, text="Score : {}".format(self.score))
         self.scoreboard.pack(anchor='n')
-        return
 
     # Updating Score Board
     def update_score_board(self):
         self.score=self.score+1
         self.scoreboard['text']="Score : {}".format(self.score)
         #SNAKE_MOVING_SPEED=SNAKE_MOVING_SPEED+1
-        return
+
     # Creating Snake Moving Settings
     def creating_snake_moving_settings(self):
         self.x=SNAKE_MOVING_SPEED
@@ -38,57 +38,52 @@ class main(Tkinter.Tk):
         self.snake_target=None
         self.gamevalid=1
         self.score=0
-        return
 
     # Creating Snake Moving Head
     def connecting_head_with_keys(self, event=None):
         key=event.keysym
-        if key=='Left':
-            self.turn_left()
-        elif key=='Right':
-            self.turn_right()
-        elif key=='Up':
-            self.turn_up()
-        elif key=='Down':
-            self.turn_down()
-        else:
-            pass
-        return
+        if str(key) != self.direction_prohibited:
+            if key=='Left':
+                self.turn_left()
+                self.direction_prohibited = 'Right'
+            elif key=='Right':
+                self.turn_right()
+                self.direction_prohibited = 'Left'
+            elif key=='Up':
+                self.turn_up()
+                self.direction_prohibited = 'Down'
+            elif key=='Down':
+                self.turn_down()
+                self.direction_prohibited = 'Up'
 
     # Creating Turning Function
     def turn_left(self):
         self.x=-SNAKE_MOVING_SPEED
         self.y=0
-        return
 
     # Creating Turning Function
     def turn_right(self):
         self.x=SNAKE_MOVING_SPEED
         self.y=0
-        return
 
     # Creating Turning Function
     def turn_up(self):
         self.x=0
         self.y=-SNAKE_MOVING_SPEED
-        return
 
     # Creating Turning Function
     def turn_down(self):
         self.x=0
         self.y=SNAKE_MOVING_SPEED
-        return
 
     # Creating snake Head
     def creating_snake_head(self):
-        self.snake=self.board.create_rectangle(1,1,11,11,fill=SNAKE_HEAD_COLOR)
-        return
+        self.snake=self.board.create_rectangle(1,1,11,11, fill=SNAKE_HEAD_COLOR)
 
     # Creating Ground
     def creating_playground(self):
         self.board=Tkinter.Canvas(self, width=PLAYGROUND_WIDTH, height=PLAYGROUND_HEIGHT, background=PLAYGROUND_COLOR)
         self.board.pack(padx=10, pady=10)
-        return
 
     # Function For Moving Head
     def moving_snake_head(self):
@@ -102,21 +97,18 @@ class main(Tkinter.Tk):
             self.x=0
             self.y=0
             self.game_loss()
-        return
 
     # Game Loss
     def game_loss(self):
         self.board.create_text(PLAYGROUND_WIDTH/2,PLAYGROUND_HEIGHT/2,text="Game Over",
                                font=('arial 60 bold'),fill='red')
         self.gamevalid=0
-        return
 
     # Snake Regularly Moving
     def re_update(self):
         self.moving_snake_head()
         self.update_snake_body_structure()
         self.food_of_snake()
-        return
 
     # Snake Food
     def food_of_snake(self):
@@ -130,7 +122,6 @@ class main(Tkinter.Tk):
                 self.board.delete("food")
                 self.snake_target=None
                 self.update_score_board()
-        return
 
     # Creating Snake Body Moving Function
     def update_snake_body_structure(self):
@@ -142,7 +133,6 @@ class main(Tkinter.Tk):
         if len(self.roadmap)>=self.bodylength:
             self.roadmap=self.roadmap[-self.bodylength:]
         self.board.create_line(tuple(self.roadmap), tag="body",width=10,fill=SNAKE_HEAD_COLOR)
-        return
 
 
 if __name__ == '__main__':
